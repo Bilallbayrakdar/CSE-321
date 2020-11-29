@@ -110,26 +110,28 @@ def sqrCheck(zeroMap):
         for e in ele:
             if e[1] == "square":
                 count+=1
-
-    if(count<len(zeroMap)):
-        minList = list()
-        if count < len(data):
-            for i in range(len(zeroMap)):
-                for j in range(len(zeroMap[0])):
-                    if zeroMap[i][j][1] == "intersect":
-                        zeroMap[i][j] = (zeroMap[i][j][0]+1,zeroMap[i][j][1]) 
-                    elif zeroMap[i][j][1] == False:
-                        minList.append(zeroMap[i][j][0])
-
-            mi = min(minList)
-            # print("mi: ",mi )
-            for i in range(len(zeroMap)):
-                for j in range(len(zeroMap[0])):
-                    if zeroMap[i][j][1] == False:
-                        zeroMap[i][j] = (zeroMap[i][j][0]-mi, zeroMap[i][j][1])
-        return False
-    else:
+    # print("count: ",count)
+    # print("len(zeroMap): ",len(zeroMap))
+    if(count == len(zeroMap)):
         return True
+    else:
+        return False
+
+def updateMx(zeroMap):
+    minList = list()
+        
+    for i in range(len(zeroMap)):
+        for j in range(len(zeroMap[0])):
+            if zeroMap[i][j][1] == False:
+                minList.append(zeroMap[i][j][0])
+    mi = min(minList)
+    # print("mi: ",mi )
+    for i in range(len(zeroMap)):
+        for j in range(len(zeroMap[0])):
+            if (zeroMap[i][j][1] == False):
+                zeroMap[i][j] = (zeroMap[i][j][0]-mi, zeroMap[i][j][1])
+            elif (zeroMap[i][j][1] == "intersect"):
+                zeroMap[i][j] = (zeroMap[i][j][0]+mi, zeroMap[i][j][1])
 # Convert map to matrix
 def mapToMx(zeroMap):
     tmp = [[None for _ in range(len(zeroMap[0]))] for _ in range(len(zeroMap))]
@@ -150,7 +152,12 @@ def assignJobs(data):
     data = reduc(data)
     zeroMap = crtMap(data)
     check(zeroMap)
+    # mxPrint(zeroMap)
     while not sqrCheck(zeroMap):
+        updateMx(zeroMap)    
+        # mxPrint(zeroMap)
+        data = mapToMx(zeroMap)
+        zeroMap = crtMap(data)
         check(zeroMap)
     printResMap(zeroMap)
 
